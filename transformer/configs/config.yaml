@@ -1,0 +1,47 @@
+# ── Data paths ────────────────────────────────────────────────────────────────
+feat_cache: output/ttc_sanity/dino_features.npz
+hdf5_path:  output/hdf5/dataset1/dataset.h5
+output_dir: output/transformer_k32_sparse
+run_name:   k32_sparse
+
+# ── Excluded episodes (corrupt / bad TTC labels — use HDF5 key names) ─────────
+excluded_episodes:
+  - episode_000044
+  - episode_000046
+
+# ── Split ─────────────────────────────────────────────────────────────────────
+test_fraction: 0.20   # last N% of all episodes held out for final test
+val_fraction:  0.15   # of remaining non-test episodes, held out for validation
+
+# ── Window ────────────────────────────────────────────────────────────────────
+window_size:   32     # K frames per sample  (50 fps → 0.64 s of context)
+window_stride: 1      # stride when sliding window across each episode
+predict_all:   false  # false = predict last frame only; true = dense loss over all K positions
+
+# ── Model ─────────────────────────────────────────────────────────────────────
+d_input:  768    # DINO-v2 ViT-B/14 [CLS] dim — do not change
+d_model:  256    # transformer hidden dim
+n_heads:  4
+n_layers: 4
+d_ff:     512    # feedforward dim inside each layer
+dropout:  0.1
+
+# ── Training ──────────────────────────────────────────────────────────────────
+epochs:         150
+batch_size:     64
+lr:             3.0e-4
+weight_decay:   1.0e-4
+warmup_epochs:  10    # linear LR warmup, then cosine decay
+grad_clip:      1.0
+
+# ── Logging & checkpoints ─────────────────────────────────────────────────────
+log_every:      5     # print metrics every N epochs
+save_best:      true  # save best checkpoint by val R²
+eval_nocontext: false # also evaluate with zero-padded single-frame windows after training
+
+use_wandb:      false
+wandb_project:  ttc-transformer
+wandb_entity:   null  # your W&B username/team, or leave null
+
+# ── Reproducibility ───────────────────────────────────────────────────────────
+seed: 42

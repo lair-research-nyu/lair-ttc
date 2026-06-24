@@ -1,0 +1,26 @@
+# pip requirements for the data_processing pipeline (Phase 1: RRD → HDF5).
+#
+# Prefer the conda environment.yaml for a full reproducible setup.
+# Use this file if you are in a pip-only environment:
+#   pip install -r data_processing/requirements.txt
+#
+# Notes:
+#   - av (PyAV) installed via pip on Windows may lack H.264 support.
+#     If decoding fails, install via conda-forge instead:
+#       conda install -c conda-forge av
+#   - rerun-sdk requires Python >= 3.8
+
+# Core
+numpy>=1.26
+pandas>=2.0
+h5py>=3.10
+
+# Video decode – PyAV (wraps FFmpeg, handles H.264)
+av>=12.0
+
+# Rerun recording SDK – Catalog server API for reading .rrd files
+rerun-sdk>=0.30
+
+# Phase 2 extras (uncomment when needed)
+# lerobot          # HDF5 → LeRobot format
+# webdataset       # HDF5 → WebDataset shards

@@ -1,0 +1,45 @@
+# Minimal conda environment for the data_processing pipeline.
+#
+# This covers Phase 1 (RRD → HDF5) only.
+# For Phase 2 (HDF5 → LeRobot) add the lerobot package.
+# For Phase 2 (HDF5 → WebDataset) add webdataset.
+# For training, use hf-env.yaml which includes PyTorch.
+#
+# Create:  conda env create -f data_processing/environment.yaml
+# Update:  conda env update -f data_processing/environment.yaml --prune
+# Activate: conda activate rrd-pipeline
+
+name: rrd-pipeline
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.12
+
+  # ── Core data tools ────────────────────────────────────────────────────────
+  - numpy>=1.26
+  - pandas>=2.0
+  - h5py>=3.10
+
+  # ── Video decode (H.264 via PyAV – no opencv needed) ──────────────────────
+  # PyAV is the Python wrapper for FFmpeg; used for H.264 decoding and
+  # frame resizing via reformat().  Install from conda-forge for the
+  # FFmpeg-linked build (pip builds sometimes lack codecs on Windows).
+  - av>=12.0
+
+  # ── Rerun recording SDK ───────────────────────────────────────────────────
+  # Provides the Catalog server API used to read .rrd files.
+  # Minimum 0.20 for rr.server.Server; tested with 0.30 and 0.31.
+  - rerun-sdk>=0.30
+
+  # ── Optional: Jupyter for exploratory work ────────────────────────────────
+  - ipykernel
+  - ipywidgets
+  - matplotlib
+
+  # ── Phase 2 extras (uncomment when needed) ────────────────────────────────
+  # pip:
+  #   - lerobot            # HDF5 → LeRobot format
+  #   - webdataset         # HDF5 → WebDataset shards
